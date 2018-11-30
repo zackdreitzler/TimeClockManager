@@ -1,0 +1,15 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<GridPane fx:controller="gui.Controller"
+          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+    <Label text="Username"/>
+    <TextField GridPane.rowIndex="1"/>
+    <Label text="Password" GridPane.rowIndex="2"/>
+    <PasswordField GridPane.rowIndex="3"/>
+    <Button text="Submit" GridPane.rowIndex="4"/>
+</GridPane>

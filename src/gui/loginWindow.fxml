@@ -11,5 +11,4 @@
     <TextField GridPane.rowIndex="1"/>
     <Label text="Password" GridPane.rowIndex="2"/>
     <PasswordField GridPane.rowIndex="3"/>
-    <Button fx:id="loginBtn" text="Submit" GridPane.rowIndex="4"/>
 </GridPane>

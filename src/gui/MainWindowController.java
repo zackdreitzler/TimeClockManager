@@ -19,7 +19,7 @@ public class MainWindowController {
     private BorderPane mainWindow;
 
     public void initialize(){
-        login();
+        //login();
     }
 
     private void login() {

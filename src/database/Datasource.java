@@ -12,14 +12,13 @@ public class Datasource {
     private static String user = "postgres";
     private static String pass = "KillerMan&17$";
     private static Connection connection;
-
+    private static final String SHIFT_TABLE_NAME = "shift";
     private static final String LOGIN_TABLE_NAME = "login_cred";
     private static final String LOGIN_USERNAME_COLUMN = "uname";
     private static final String LOGIN_PASSWORD_COLUMN = "pass";
     private static final String QUERY_LOGIN = "SELECT * FROM" + LOGIN_TABLE_NAME + " WHERE " + LOGIN_USERNAME_COLUMN +
             " = ? AND " + LOGIN_PASSWORD_COLUMN + " = ?;";
 
-    private static final String SHIFT_TABLE_NAME = "shifts";
     private static final String SHIFT_ESSN_COLUMN = "essn";
     private static final String SHIFT_INTIME_COLUMN = "intime";
     private static final String SHIFT_OUTTIME_COLUMN = "outtime";
@@ -37,7 +36,21 @@ public class Datasource {
     private static final String QUERY_EMPLOYEE_INFO = "SELECT * FROM " + EMPLOYEE_TABLE_NAME + " WHERE " + EMPLOYEE_SSN_COLUMN
             + " = ?;";
 
+    private static final String UPDATE_EMPLOYEE_INFO = "UPDATE " + EMPLOYEE_TABLE_NAME + " SET " +EMPLOYEE_MSSN_COLUMN +
+            " = ?, " + EMPLOYEE_PAYRATE_COLUMN + " = ? WHERE " + EMPLOYEE_SSN_COLUMN + " = ?;";
 
+    private static final String DELETE_EMPLOYEE_EMPLOYEETABLE = "DELETE FROM " + EMPLOYEE_TABLE_NAME + " WHERE " +
+            EMPLOYEE_SSN_COLUMN + " = ?;";
+    private static final String DELETE_EMPLOYEE_LOGINTABLE = "DELETE FROM " + LOGIN_TABLE_NAME + " WHERE " +
+            EMPLOYEE_SSN_COLUMN + " = ?;";
+    private static final String DELETE_EMPLOYEE_SHIFTTABLE = "DELETE FROM " + SHIFT_TABLE_NAME + " WHERE " +
+            EMPLOYEE_SSN_COLUMN + " = ?;";
+
+
+    private static PreparedStatement deleteEmployeeFromEmployee;
+    private static PreparedStatement deleteEmployeeFromShift;
+    private static PreparedStatement deleteEmployeeFromLogin;
+    private static PreparedStatement updateEmpInfo;
     private static PreparedStatement queryLogin;
     private static PreparedStatement queryClockStatus;
     private static PreparedStatement queryEmployeeInfo;
@@ -65,6 +78,10 @@ public class Datasource {
             queryLogin = connection.prepareStatement(QUERY_LOGIN);
             queryClockStatus = connection.prepareStatement(QUERY_CLOCKED_IN);
             queryEmployeeInfo = connection.prepareStatement(QUERY_EMPLOYEE_INFO);
+            updateEmpInfo = connection.prepareStatement(UPDATE_EMPLOYEE_INFO);
+            deleteEmployeeFromEmployee = connection.prepareStatement(DELETE_EMPLOYEE_EMPLOYEETABLE);
+            deleteEmployeeFromLogin = connection.prepareStatement(DELETE_EMPLOYEE_LOGINTABLE);
+            deleteEmployeeFromShift = connection.prepareStatement(DELETE_EMPLOYEE_SHIFTTABLE);
             return true;
 
         }catch (SQLException e){
@@ -81,6 +98,24 @@ public class Datasource {
         try{
             if(queryLogin != null){
                 queryLogin.close();
+            }
+            if (queryClockStatus != null){
+                queryClockStatus.close();
+            }
+            if(queryEmployeeInfo != null){
+                queryEmployeeInfo.close();
+            }
+            if(updateEmpInfo != null){
+                updateEmpInfo.close();
+            }
+            if(deleteEmployeeFromShift != null){
+                deleteEmployeeFromShift.close();
+            }
+            if(deleteEmployeeFromLogin != null){
+                deleteEmployeeFromLogin.close();
+            }
+            if(deleteEmployeeFromEmployee != null){
+                deleteEmployeeFromEmployee.close();
             }
             return true;
         }catch(SQLException e){
@@ -130,6 +165,7 @@ public class Datasource {
 
     /**
      * Queries all of the given Employee's information.
+     * @param ssn is the employees id number
      * @return The employee's information
      */
     public ResultSet getEmployeeInfo(int ssn){
@@ -140,6 +176,46 @@ public class Datasource {
         }catch(SQLException e){
             System.out.println("Clock Error " + e.getMessage());
             return null;
+        }
+    }
+
+    /**
+     * Updates an employee in the database.
+     * @param mssn the manager's ssn number.
+     * @param payrate the payrate of this employee.
+     * @param ssn the employee's id number.
+     * @return true if it successfully updates the employee
+     */
+    public boolean updateEmployeeInfo(int ssn, int mssn, float payrate){
+        try{
+            updateEmpInfo.setInt(1, mssn);
+            updateEmpInfo.setFloat(2, payrate);
+            updateEmpInfo.setInt(3, ssn);
+            updateEmpInfo.executeQuery();
+            return true;
+        }catch(SQLException e){
+            System.out.println("Error updating" + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Deletes employee from the database.
+     * @param ssn the employees id number.
+     * @return true if the deletion is successful.
+     */
+    public boolean deleteEmployee(int ssn){
+        try{
+            deleteEmployeeFromEmployee.setInt(1,ssn);
+            deleteEmployeeFromLogin.setInt(1,ssn);
+            deleteEmployeeFromShift.setInt(1,ssn);
+            deleteEmployeeFromEmployee.executeQuery();
+            deleteEmployeeFromLogin.executeQuery();
+            deleteEmployeeFromShift.executeQuery();
+            return true;
+        }catch(SQLException e){
+            System.out.println("Error deleting" + e.getMessage());
+            return false;
         }
     }
 }

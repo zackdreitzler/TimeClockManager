@@ -6,7 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -21,7 +20,8 @@ public class MainWindowController {
     public void initialize(){
         //login();
     }
-
+    
+    @FXML
     private void login() {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.initOwner(mainWindow.getScene().getWindow());

@@ -6,10 +6,12 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.PasswordField?>
 <GridPane fx:controller="gui.LoginWindowController"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10"
+          fx:id="loginWindow">
+
     <Label text="Username"/>
     <TextField GridPane.rowIndex="1"/>
     <Label text="Password" GridPane.rowIndex="2"/>
     <PasswordField GridPane.rowIndex="3"/>
-    <Button fx:id="loginBtn" text="Submit" GridPane.rowIndex="4"/>
+
 </GridPane>

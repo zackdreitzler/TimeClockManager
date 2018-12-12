@@ -12,9 +12,6 @@
             fx:controller="gui.MainWindowController"
             prefHeight="400.0" prefWidth="600.0"
             fx:id="mainWindow">
-<<<<<<< HEAD
-
-=======
     <center>
         <TableView>
             <columns>
@@ -40,7 +37,6 @@
         </TableView>
     </center>
     <bottom>
-        <Button text="Login" onAction="#login" maxWidth="Infinity" mnemonicParsing="false"/>
+        <Button text="FAILED TO CONNECT TO DATABASE" onAction="#login" maxWidth="Infinity" mnemonicParsing="false"/>
     </bottom>
->>>>>>> a436414f9506ce708b5a892862cc33174f37533a
 </BorderPane>

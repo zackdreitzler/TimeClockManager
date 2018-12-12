@@ -20,7 +20,7 @@ public class MainWindowController {
     public void initialize(){
         //login();
     }
-    
+
     @FXML
     private void login() {
         Dialog<ButtonType> dialog = new Dialog<>();

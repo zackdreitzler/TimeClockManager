@@ -23,7 +23,7 @@ public class Main extends Application {
         super.init();
         if(!Datasource.getInstance().open()) {
             System.out.println("FATAL ERROR: Couldn't connect to database");
-            Platform.exit();
+            //Platform.exit();
         }
     }
 

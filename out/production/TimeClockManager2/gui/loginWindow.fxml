@@ -13,8 +13,5 @@
     <TextField GridPane.rowIndex="1"/>
     <Label text="Password" GridPane.rowIndex="2"/>
     <PasswordField GridPane.rowIndex="3"/>
-<<<<<<< HEAD
-=======
 
->>>>>>> a436414f9506ce708b5a892862cc33174f37533a
 </GridPane>

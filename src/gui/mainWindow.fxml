@@ -37,6 +37,6 @@
         </TableView>
     </center>
     <bottom>
-        <Button text="FAILED TO CONNECT TO DATABASE" onAction="#login" maxWidth="Infinity" mnemonicParsing="false"/>
+        <Button text="Login" onAction="#login" maxWidth="Infinity" mnemonicParsing="false"/>
     </bottom>
 </BorderPane>

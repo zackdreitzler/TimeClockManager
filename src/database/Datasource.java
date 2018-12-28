@@ -8,7 +8,7 @@ import java.sql.*;
  * @version .01
  */
 public class Datasource {
-    private static String databaseURL = "jdbc:postgresql://localhost:5432/example";
+    private static String databaseURL = "jdbc:postgresql://localhost:5432/payrollmanagement";
     private static String user = "postgres";
     private static String pass = "KillerMan&17$";
     private static Connection connection;
@@ -16,7 +16,7 @@ public class Datasource {
     private static final String LOGIN_TABLE_NAME = "login_cred";
     private static final String LOGIN_USERNAME_COLUMN = "uname";
     private static final String LOGIN_PASSWORD_COLUMN = "pass";
-    private static final String QUERY_LOGIN = "SELECT * FROM" + LOGIN_TABLE_NAME + " WHERE " + LOGIN_USERNAME_COLUMN +
+    private static final String QUERY_LOGIN = "SELECT * FROM " + LOGIN_TABLE_NAME + " WHERE " + LOGIN_USERNAME_COLUMN +
             " = ? AND " + LOGIN_PASSWORD_COLUMN + " = ?;";
 
     private static final String SHIFT_ESSN_COLUMN = "essn";
@@ -86,6 +86,7 @@ public class Datasource {
 
         }catch (SQLException e){
             System.out.println("Failed to connect to database");
+           // e.printStackTrace();
             return false;
         }
     }
@@ -135,7 +136,8 @@ public class Datasource {
             queryLogin.setString(1, uname);
             queryLogin.setString(2, pass);
             ResultSet results = queryLogin.executeQuery();
-            if (results.getString(1).equals(uname) && results.getString(2).equals(pass)){
+            results.next();
+            if (results.getString(2).equals(uname) && results.getString(3).equals(pass)){
                 return true;
             }
             return false;

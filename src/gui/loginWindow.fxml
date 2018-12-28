@@ -10,8 +10,8 @@
           fx:id="loginWindow">
 
     <Label text="Username"/>
-    <TextField GridPane.rowIndex="1"/>
+    <TextField GridPane.rowIndex="1" fx:id="usernameField"/>
     <Label text="Password" GridPane.rowIndex="2"/>
-    <PasswordField GridPane.rowIndex="3"/>
+    <PasswordField GridPane.rowIndex="3" fx:id="passwordField"/>
 
 </GridPane>

@@ -39,11 +39,16 @@ public class MainWindowController {
 
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+        boolean loginSuccess;
+        do{
+            Optional<ButtonType> result = dialog.showAndWait();
+            if(result.isPresent() && result.get() == ButtonType.OK) {
+                LoginWindowController loginWindowController = fxmlLoader.getController();
+                loginSuccess = loginWindowController.queryLogin();
+            }else{
+                break;
+            }
+        }while(!loginSuccess);
 
-        Optional<ButtonType> result = dialog.showAndWait();
-        if(result.isPresent() && result.get() == ButtonType.OK) {
-            LoginWindowController loginWindowController = fxmlLoader.getController();
-
-        }
     }
 }

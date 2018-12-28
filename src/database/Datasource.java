@@ -1,6 +1,7 @@
 package database;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 
 /**
  * The singleton class that holds all of the data from the database.
@@ -12,7 +13,8 @@ public class Datasource {
     private static String user = "postgres";
     private static String pass = "KillerMan&17$";
     private static Connection connection;
-    private static final String SHIFT_TABLE_NAME = "shift";
+    private int currentEmployeeSSN;
+    private static final String SHIFT_TABLE_NAME = "shifts";
     private static final String LOGIN_TABLE_NAME = "login_cred";
     private static final String LOGIN_USERNAME_COLUMN = "uname";
     private static final String LOGIN_PASSWORD_COLUMN = "pass";
@@ -20,10 +22,15 @@ public class Datasource {
             " = ? AND " + LOGIN_PASSWORD_COLUMN + " = ?;";
 
     private static final String SHIFT_ESSN_COLUMN = "essn";
-    private static final String SHIFT_INTIME_COLUMN = "intime";
-    private static final String SHIFT_OUTTIME_COLUMN = "outtime";
-    private static final String QUERY_CLOCKED_IN = "SELECT " + SHIFT_OUTTIME_COLUMN + " FROM " + SHIFT_TABLE_NAME +
-    " WHERE " + SHIFT_ESSN_COLUMN + " = ? AND " + SHIFT_OUTTIME_COLUMN + " = NULL;";
+    private static final String SHIFT_INTIME_COLUMN = "in_time";
+    private static final String SHIFT_OUTTIME_COLUMN = "out_time";
+    private static final String QUERY_CLOCKED_IN = "SELECT * FROM " + SHIFT_TABLE_NAME +
+    " WHERE " + SHIFT_ESSN_COLUMN + " = ? AND " + SHIFT_OUTTIME_COLUMN + " IS NULL;";
+    private static final String CLOCK_IN_QUERY = "INSERT INTO " + SHIFT_TABLE_NAME + "(" + SHIFT_ESSN_COLUMN +
+        "," + SHIFT_INTIME_COLUMN + ") VALUES (?,?);";
+    private static final String CLOCK_OUT_QUERY = "UPDATE " + SHIFT_TABLE_NAME + " SET " + SHIFT_OUTTIME_COLUMN +
+            " = ? WHERE " + SHIFT_ESSN_COLUMN + " = ? AND " + SHIFT_OUTTIME_COLUMN + " IS NULL;";
+
 
     private static final String EMPLOYEE_TABLE_NAME = "employee";
     private static final String EMPLOYEE_SSN_COLUMN = "ssn";
@@ -54,6 +61,8 @@ public class Datasource {
     private static PreparedStatement queryLogin;
     private static PreparedStatement queryClockStatus;
     private static PreparedStatement queryEmployeeInfo;
+    private static PreparedStatement clockInEmployee;
+    private static PreparedStatement clockOutEmployee;
     private static Datasource instance;
 
     private Datasource(){}
@@ -65,6 +74,14 @@ public class Datasource {
     public static Datasource getInstance() {
         if(instance == null) instance = new Datasource();
         return instance;
+    }
+
+    /**
+     * Gets the SSN of the currently logged in Employee.
+     * @return int SSN of the current employee.
+     */
+    public int getCurrentEmployeeSSN(){
+        return currentEmployeeSSN;
     }
 
     /**
@@ -82,6 +99,8 @@ public class Datasource {
             deleteEmployeeFromEmployee = connection.prepareStatement(DELETE_EMPLOYEE_EMPLOYEETABLE);
             deleteEmployeeFromLogin = connection.prepareStatement(DELETE_EMPLOYEE_LOGINTABLE);
             deleteEmployeeFromShift = connection.prepareStatement(DELETE_EMPLOYEE_SHIFTTABLE);
+            clockInEmployee = connection.prepareStatement(CLOCK_IN_QUERY);
+            clockOutEmployee = connection.prepareStatement(CLOCK_OUT_QUERY);
             return true;
 
         }catch (SQLException e){
@@ -118,6 +137,12 @@ public class Datasource {
             if(deleteEmployeeFromEmployee != null){
                 deleteEmployeeFromEmployee.close();
             }
+            if(clockInEmployee != null){
+                clockInEmployee.close();
+            }
+            if(clockOutEmployee != null){
+                clockOutEmployee.close();
+            }
             return true;
         }catch(SQLException e){
             System.out.println("Couldn't close connection: " + e.getMessage());
@@ -138,6 +163,7 @@ public class Datasource {
             ResultSet results = queryLogin.executeQuery();
             results.next();
             if (results.getString(2).equals(uname) && results.getString(3).equals(pass)){
+                currentEmployeeSSN = results.getInt(1);
                 return true;
             }
             return false;
@@ -151,12 +177,14 @@ public class Datasource {
      * Checks to see if the given employee is clocked in or out.
      * @return true if employee is clocked in.
      */
-    public boolean queryEmployeeClockStatus(int ssn){
+    public boolean queryEmployeeClockStatus(){
         try{
-            queryClockStatus.setInt(1, ssn);
+            queryClockStatus.setInt(1, currentEmployeeSSN);
             ResultSet results = queryClockStatus.executeQuery();
-            if (results.getString(0).isEmpty()){
-                return true;
+            if(results.next()){
+                if (results.getTimestamp(3) == null){
+                    return true;
+                }
             }
             return false;
         }catch(SQLException e){
@@ -217,6 +245,32 @@ public class Datasource {
             return true;
         }catch(SQLException e){
             System.out.println("Error deleting" + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean clockInEmployeeOnTable(){
+        try{
+            Timestamp time = Timestamp.valueOf(LocalDateTime.now());
+            clockInEmployee.setInt(1, currentEmployeeSSN);
+            clockInEmployee.setTimestamp(2, time);
+            clockInEmployee.executeQuery();
+            return true;
+        }catch (SQLException e){
+            System.out.println("Error Clocking Employee in. " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean clockOutEmployeeOnTable(){
+        try{
+            Timestamp time = Timestamp.valueOf(LocalDateTime.now());
+            clockOutEmployee.setTimestamp(1, time);
+            clockOutEmployee.setInt(2, currentEmployeeSSN);
+            clockOutEmployee.executeQuery();
+            return true;
+        }catch (SQLException e){
+            System.out.println("Error Clocking Employee out. " + e.getMessage());
             return false;
         }
     }

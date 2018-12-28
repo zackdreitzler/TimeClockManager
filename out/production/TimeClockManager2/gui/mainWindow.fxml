@@ -37,6 +37,9 @@
         </TableView>
     </center>
     <bottom>
-        <Button text="Login" onAction="#login" maxWidth="Infinity" mnemonicParsing="false"/>
+        <HBox>
+            <Button text="Login" onAction="#login" prefWidth="1000"/>
+            <Button text="Clock" onAction="#punchClock" prefWidth="1000"/>
+        </HBox>
     </bottom>
 </BorderPane>

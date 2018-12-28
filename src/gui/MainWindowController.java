@@ -8,19 +8,25 @@ import javafx.scene.control.Dialog;
 import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class MainWindowController {
 
-    private Datasource datasource;
+    private Datasource datasource = Datasource.getInstance();
+    private int currentEmployeeSSN;
 
     @FXML
     private BorderPane mainWindow;
 
     public void initialize(){
-        //login();
+
     }
 
+    /**
+     * Handler for the login button. This allows the user
+     * to log into their account and pull their shifts.
+     */
     @FXML
     private void login() {
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -49,6 +55,18 @@ public class MainWindowController {
                 break;
             }
         }while(!loginSuccess);
+    }
 
+    /**
+     * Handler for the Time Punch button. This allows the user to
+     * clock in and out of the system.
+     */
+    @FXML
+    public void punchClock(){
+        if(!datasource.queryEmployeeClockStatus()){
+            datasource.clockInEmployeeOnTable();
+        }else{
+            datasource.clockOutEmployeeOnTable();
+        }
     }
 }

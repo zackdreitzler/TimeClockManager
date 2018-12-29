@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 /**
  * The singleton class that holds all of the data from the database.
  * @author Zack Dreitzler
- * @version .01
+ * @version .05
  */
 public class Datasource {
     private static String databaseURL = "jdbc:postgresql://localhost:5432/payrollmanagement";
@@ -30,6 +30,8 @@ public class Datasource {
         "," + SHIFT_INTIME_COLUMN + ") VALUES (?,?);";
     private static final String CLOCK_OUT_QUERY = "UPDATE " + SHIFT_TABLE_NAME + " SET " + SHIFT_OUTTIME_COLUMN +
             " = ? WHERE " + SHIFT_ESSN_COLUMN + " = ? AND " + SHIFT_OUTTIME_COLUMN + " IS NULL;";
+    private static final String QUERY_ALL_SHIFTS = "SELECT * FROM " + SHIFT_TABLE_NAME + " WHERE " + SHIFT_ESSN_COLUMN +
+            " = ?;";
 
 
     private static final String EMPLOYEE_TABLE_NAME = "employee";
@@ -63,6 +65,7 @@ public class Datasource {
     private static PreparedStatement queryEmployeeInfo;
     private static PreparedStatement clockInEmployee;
     private static PreparedStatement clockOutEmployee;
+    private static PreparedStatement getEmployeeShfits;
     private static Datasource instance;
 
     private Datasource(){}
@@ -101,6 +104,7 @@ public class Datasource {
             deleteEmployeeFromShift = connection.prepareStatement(DELETE_EMPLOYEE_SHIFTTABLE);
             clockInEmployee = connection.prepareStatement(CLOCK_IN_QUERY);
             clockOutEmployee = connection.prepareStatement(CLOCK_OUT_QUERY);
+            getEmployeeShfits = connection.prepareStatement(QUERY_ALL_SHIFTS);
             return true;
 
         }catch (SQLException e){
@@ -142,6 +146,9 @@ public class Datasource {
             }
             if(clockOutEmployee != null){
                 clockOutEmployee.close();
+            }
+            if(getEmployeeShfits != null){
+                getEmployeeShfits.close();
             }
             return true;
         }catch(SQLException e){
@@ -249,6 +256,10 @@ public class Datasource {
         }
     }
 
+    /**
+     * Clocks the employee in.
+     * @return true if employee is clocked in successfully.
+     */
     public boolean clockInEmployeeOnTable(){
         try{
             Timestamp time = Timestamp.valueOf(LocalDateTime.now());
@@ -262,6 +273,10 @@ public class Datasource {
         }
     }
 
+    /**
+     * Clocks employee out.
+     * @return true if employee is clocked out successfully.
+     */
     public boolean clockOutEmployeeOnTable(){
         try{
             Timestamp time = Timestamp.valueOf(LocalDateTime.now());
@@ -269,9 +284,24 @@ public class Datasource {
             clockOutEmployee.setInt(2, currentEmployeeSSN);
             clockOutEmployee.executeQuery();
             return true;
-        }catch (SQLException e){
+        }catch (SQLException e) {
             System.out.println("Error Clocking Employee out. " + e.getMessage());
             return false;
+        }
+    }
+
+    /**
+     * Gets all of the shifts of the current employee.
+     * @return ResultSet of the executed SQL query.
+     */
+    public ResultSet getCurrentEmployeeShifts(){
+        try{
+            getEmployeeShfits.setInt(1, currentEmployeeSSN);
+            ResultSet resultSet = getEmployeeShfits.executeQuery();
+            return resultSet;
+        }catch (SQLException e){
+            System.out.println("Error getting employee's shifts. " + e.getMessage());
+            return null;
         }
     }
 }

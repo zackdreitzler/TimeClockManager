@@ -13,11 +13,11 @@
             prefHeight="400.0" prefWidth="600.0"
             fx:id="mainWindow">
     <center>
-        <TableView>
+        <TableView fx:id="shiftTableview">
             <columns>
                 <TableColumn text="ID" fx:id="idColumn">
                     <cellValueFactory>
-                        <PropertyValueFactory property="essn"/>
+                        <PropertyValueFactory property="ssn"/>
                     </cellValueFactory>
                 </TableColumn>
                 <TableColumn text="In Time" fx:id="inTimeColumn">

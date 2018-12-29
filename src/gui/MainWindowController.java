@@ -1,27 +1,30 @@
 package gui;
 
 import database.Datasource;
+import database.Shift;
+import database.ShiftData;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Optional;
 
 public class MainWindowController {
-
     private Datasource datasource = Datasource.getInstance();
-    private int currentEmployeeSSN;
-
+    ShiftData shiftData = new ShiftData();
+    @FXML
+    private TableView<Shift> shiftTableview;
     @FXML
     private BorderPane mainWindow;
-
-    public void initialize(){
-
-    }
 
     /**
      * Handler for the login button. This allows the user
@@ -55,7 +58,12 @@ public class MainWindowController {
                 break;
             }
         }while(!loginSuccess);
+
+        //Here is where shifts are added to shiftdata and then the tableview is updated.
+        shiftData.readInShifts(datasource);
+        shiftTableview.setItems(shiftData.getShifts());
     }
+
 
     /**
      * Handler for the Time Punch button. This allows the user to

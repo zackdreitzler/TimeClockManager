@@ -60,8 +60,7 @@ public class MainWindowController {
         }while(!loginSuccess);
 
         //Here is where shifts are added to shiftdata and then the tableview is updated.
-        shiftData.readInShifts(datasource);
-        shiftTableview.setItems(shiftData.getShifts());
+        updateTable();
     }
 
 
@@ -76,5 +75,15 @@ public class MainWindowController {
         }else{
             datasource.clockOutEmployeeOnTable();
         }
+        updateTable();
+    }
+
+    /**
+     * Reads in the shifts and updates the table.
+     */
+    private void updateTable(){
+        shiftData.clear();
+        shiftData.readInShifts(datasource);
+        shiftTableview.setItems(shiftData.getShifts());
     }
 }

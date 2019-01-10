@@ -41,4 +41,11 @@ public class ShiftData {
             System.out.println("Error checking shift query. " + e.getMessage());
         }
     }
+
+    /**
+     * Clears out the shift list.
+     */
+    public void clear(){
+        shifts.clear();
+    }
 }

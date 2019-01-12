@@ -40,6 +40,7 @@
         <HBox>
             <Button text="Login" onAction="#login" prefWidth="1000"/>
             <Button text="Clock" onAction="#punchClock" prefWidth="1000"/>
+            <Button text="ManagerMenu" onAction="#openManagerDialog" prefWidth="1000"/>
         </HBox>
     </bottom>
 </BorderPane>

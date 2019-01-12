@@ -13,7 +13,7 @@ public class Datasource {
     private static String user = "postgres";
     private static String pass = "KillerMan&17$";
     private static Connection connection;
-    private int currentEmployeeSSN;
+    private int currentEmployeeSSN = 0;
     private static final String SHIFT_TABLE_NAME = "shifts";
     private static final String LOGIN_TABLE_NAME = "login_cred";
     private static final String LOGIN_USERNAME_COLUMN = "uname";
@@ -304,6 +304,4 @@ public class Datasource {
             return null;
         }
     }
-
-
 }

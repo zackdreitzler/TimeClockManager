@@ -23,6 +23,7 @@ public class ShiftData {
      * the Observable list.
      */
     public void readInShifts(Datasource datasource){
+        if(datasource.getCurrentEmployeeSSN() == 0) return;
         ResultSet resultSet = datasource.getCurrentEmployeeShifts();
         try{
             while (resultSet.next()){

@@ -86,4 +86,12 @@ public class MainWindowController {
         shiftData.readInShifts(datasource);
         shiftTableview.setItems(shiftData.getShifts());
     }
+
+    /**
+     * Handler for ManagerMenu button. This opens up the dialog
+     * containing all of the manager options.
+     */
+    public void openManagerDialog(){
+
+    }
 }
